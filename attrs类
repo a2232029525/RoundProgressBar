@@ -1,0 +1,12 @@
+ <resources>
+    <declare-styleable name="RoundProgressBar">
+        <attr name="progressColor" format="reference|color"/>
+        <attr name="backgroundColor" format="reference|color"/>
+        <attr name="progressTextColor" format="reference|color"/>
+        <attr name="textSize" format="reference|integer"/>
+        <attr name="strokeColor" format="reference|color"/>
+        <attr name="strokeWidth" format="reference|float"/>
+        <attr name="backgroundAlpha" format="reference|integer"/>
+        <attr name="progressAlpha" format="reference|integer"/>
+    </declare-styleable>
+</resources>
