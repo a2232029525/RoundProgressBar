@@ -1,0 +1,102 @@
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
+import android.view.View;
+
+/**
+ * Created by 22320 on 2017/12/14.
+ */
+
+public class RoundProgressBar extends View {
+
+    private int background_color;
+    private int progress_color;
+    private int progressTextColor;
+    private int radius;
+    private int textSize;
+    private Paint textPaint;
+    private int progress;
+    private Paint strokePaint;
+    private float strokeWidth;
+    private int stroke_color;
+    private int backgroundAlpha;
+    private Paint backgroundPaint;
+    private Paint progressPaint;
+    private RectF rectF;
+    private int progressAlpha;
+
+    public RoundProgressBar(Context context) {
+        super(context);
+    }
+
+    public RoundProgressBar(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.RoundProgressBar);
+        background_color = typedArray.getColor(R.styleable.RoundProgressBar_backgroundColor, Color.parseColor("#ffffff"));
+        progress_color = typedArray.getColor(R.styleable.RoundProgressBar_progressColor, Color.parseColor("#ffffff"));
+        progressTextColor = typedArray.getColor(R.styleable.RoundProgressBar_progressTextColor, Color.parseColor("#333333"));
+        textSize = typedArray.getInteger(R.styleable.RoundProgressBar_textSize, 12);
+        strokeWidth = typedArray.getFloat(R.styleable.RoundProgressBar_strokeWidth, 1);
+        stroke_color = typedArray.getInteger(R.styleable.RoundProgressBar_strokeColor, Color.parseColor("#ffffff"));
+        backgroundAlpha = typedArray.getInteger(R.styleable.RoundProgressBar_backgroundAlpha, 255);
+        progressAlpha = typedArray.getInteger(R.styleable.RoundProgressBar_progressAlpha, 255);
+
+        textPaint = new Paint();
+        textPaint.setAntiAlias(true);
+        textPaint.setTextSize(textSize);
+        textPaint.setColor(progressTextColor);
+        textPaint.setShadowLayer(4,5,5,Color.parseColor("#333333"));
+
+        strokePaint = new Paint();
+        strokePaint.setAntiAlias(true);
+        strokePaint.setColor(stroke_color);
+        strokePaint.setStyle(Paint.Style.STROKE);
+
+
+        backgroundPaint = new Paint();
+        backgroundPaint.setAntiAlias(true);
+        backgroundPaint.setColor(background_color);
+        backgroundPaint.setStyle(Paint.Style.FILL);
+        backgroundPaint.setAlpha(backgroundAlpha);
+
+        progressPaint = new Paint();
+        progressPaint.setStyle(Paint.Style.FILL);
+        progressPaint.setColor(progress_color);
+        progressPaint.setAlpha(progressAlpha);
+        progressPaint.setAntiAlias(true);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        radius=getWidth()<getHeight()? getWidth()/2:getHeight()/2;
+
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        canvas.drawCircle(getWidth()/2,getHeight()/2,radius-strokeWidth,backgroundPaint);
+        canvas.drawCircle(getWidth()/2,getHeight()/2,radius,strokePaint);
+        rectF=new RectF(getWidth()/2-radius,getHeight()/2-radius,getWidth()/2+radius,getHeight()/2+radius);
+        canvas.drawArc(rectF,-90,Float.valueOf(progress)/100*360,true,progressPaint);
+        String s = progress + "%";
+        Rect bounds = new Rect();
+        progressPaint.getTextBounds(s,0,s.length(), bounds);
+        canvas.drawText(progress+"%",(getWidth()/2)-(bounds.width()/2),(getHeight()/2)+(bounds.height()/2),textPaint);
+    }
+
+
+    public synchronized void setProgress(int progress){
+        this.progress = progress;
+        invalidate();
+    }
+
+}
